@@ -2,7 +2,7 @@
 #include <QKeySequence>
 #include <Windows.h>
 
-bool QGlobalShortcut::nativeEventFilter(const QByteArray &event_type,
+bool QGlobalShortcut::QGlobalShortcutEventFilter::nativeEventFilter(const QByteArray &event_type,
                                         void *message, long *result)
 {
     MSG* msg = static_cast<MSG*>(message);

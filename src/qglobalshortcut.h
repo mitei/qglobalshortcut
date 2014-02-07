@@ -5,10 +5,16 @@
 #include <QAbstractNativeEventFilter>
 #include <QKeySequence>
 
-class QGlobalShortcut : public QObject, public QAbstractNativeEventFilter {
+class QGlobalShortcut : public QObject {
     Q_OBJECT
     Q_PROPERTY(QKeySequence key READ key WRITE setKey)
     //Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled)
+private:
+
+    class QGlobalShortcutEventFilter : public QAbstractNativeEventFilter {
+    public:
+        bool nativeEventFilter(const QByteArray& eventType, void* message, long* result);
+    };
 
 public:
     explicit QGlobalShortcut(QObject* parent = nullptr);
@@ -19,7 +25,7 @@ public:
     QKeySequence key() const;
     void setKey(const QKeySequence& keyseq);
     //bool isEnabled() const;    void setEnabled(bool on);
- 
+
 signals:
     void activated();
 
@@ -29,6 +35,7 @@ private:
     void initialize();
 
 private:
+    static QGlobalShortcutEventFilter global_shortcut_event_;
     /* quint32           keyid
        QGlobalShortcut*  shortcut */
     static QMultiHash<quint32, QGlobalShortcut*> shortcuts_;

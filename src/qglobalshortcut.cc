@@ -2,6 +2,7 @@
 #include <QCoreApplication>
 
 QMultiHash<quint32, QGlobalShortcut*> QGlobalShortcut::shortcuts_;
+QGlobalShortcut::QGlobalShortcutEventFilter QGlobalShortcut::global_shortcut_event_;
 
 QGlobalShortcut::QGlobalShortcut(QObject* parent)
     : QObject(parent)
@@ -19,7 +20,7 @@ QGlobalShortcut::QGlobalShortcut(const QKeySequence &keyseq, QObject *parent)
 void QGlobalShortcut::initialize() {
     static bool initialized = false;
     if (!initialized) {
-        qApp->installNativeEventFilter(this);
+        qApp->installNativeEventFilter(&global_shortcut_event_);
         initialized = true;
     }
 }
@@ -35,7 +36,7 @@ QKeySequence QGlobalShortcut::key() const
 
 void QGlobalShortcut::setKey(const QKeySequence& keyseq)
 {
-    if (!keyseq.isEmpty()) {
+    if (!keyseq_.isEmpty()) {
         unsetKey();
     }
     quint32 keyid = calcId(keyseq);
