@@ -39,8 +39,9 @@ private:
     /* quint32           keyid
        QGlobalShortcut*  shortcut */
     static QMultiHash<quint32, QGlobalShortcut*> shortcuts_;
-    static void activate(quint32 id);
+    static bool activate(quint32 id);
     static inline quint32 calcId(const QKeySequence& keyseq);
+    static inline quint32 calcId(quint32 k, quint32 m);
     static inline Qt::Key getKey(const QKeySequence& keyseq);
     static inline Qt::KeyboardModifiers getMods(const QKeySequence& keyseq);
     static quint32 toNativeKeycode(Qt::Key k);

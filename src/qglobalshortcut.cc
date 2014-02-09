@@ -60,19 +60,27 @@ void QGlobalShortcut::unsetKey() {
     }
 }
 
-void QGlobalShortcut::activate(quint32 id) {
+bool QGlobalShortcut::activate(quint32 id) {
     if (shortcuts_.contains(id)) {
         foreach (QGlobalShortcut* s, shortcuts_.values(id)) {
             emit s->activated();
         }
+        return true;
     }
+    return false;
 }
 
 quint32 QGlobalShortcut::calcId(const QKeySequence& keyseq) {
     quint32 keycode = toNativeKeycode(getKey(keyseq));
     quint32 mods    = toNativeModifiers(getMods(keyseq));
-    return keycode | mods;
+    return calcId(keycode, mods);
 }
+
+#ifndef Q_OS_UNIX
+quint32 QGlobalShortcut::calcId(quint32 k, quint32 m) {
+    return k | m;
+}
+#endif
 
 Qt::Key QGlobalShortcut::getKey(const QKeySequence& keyseq) {
     if (keyseq.isEmpty()) {
